@@ -1,4 +1,4 @@
-console.log("que sera");
+let uno = console.log("que sera");
 
 class ProductManager {
   products;
@@ -28,4 +28,4 @@ getProducts = () => {
   return this.products;
 };
 
-let producto1 = console.log(product1.getProducts());
+console.log(product1.getProducts());

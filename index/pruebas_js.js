@@ -1,12 +1,12 @@
 class ProductManager {
-  constructor() {
-    this.title = []; //nombre dell producto
-    this.description = []; // descripcion del producto
-    this.price = []; //precio
-    this.thumbnail = []; //ruta de imagen
-    this.code = []; //codigo identificador
-    this.stock = []; //numero de piezas disponibles
-    // this.products = $ {this.title} $ {this.description} ${this.price} ${this.thumbnail} ${this.code} ${this.stock};
+  constructor(title, description, price, thumbnail, code, stock) {
+    this.title = title; //nombre dell producto
+    this.description = description; // descripcion del producto
+    this.price = price; //precio
+    this.thumbnail = thumbnail; //ruta de imagen
+    this.code = code; //codigo identificador
+    this.stock = stock; //numero de piezas disponibles
+    ///this.products = {this.title} $ {this.description} ${this.price} ${this.thumbnail} ${this.code} ${this.stock};
   }
 
   addProduct() {
@@ -28,15 +28,15 @@ class ProductManager {
     );
 
     getProducts = () => {
-      console.log(product1);
+      console.log(product1.addProduct);
     };
 
     getProducts();
   }
 }
 
-getProducts = () => {
+/*getProducts = () => {
   console.log(product1);
 };
 
-getProducts();
+getProducts();*/
