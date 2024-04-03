@@ -1,3 +1,5 @@
+console.log("que sera");
+
 class ProductManager {
   products;
   constructor() {
