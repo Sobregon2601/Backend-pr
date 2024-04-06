@@ -53,7 +53,7 @@
   console.log(product1);
 };
 
-getProducts();*/
+getProducts();*/ /*
 class ProdcutManager {
   constructor() {
     this.products = [];
@@ -91,3 +91,30 @@ pm.addProduct("Producto test 3", "descripcion 3", 33, "img1.jpg", "3333", 2);
 console.log(pm.getProducts());
 
 console.log(pm.getProductById(1));
+
+*/
+
+class ProductManager {
+  constructor() {
+    this.products = [];
+    this.id = 1;
+  }
+
+  addProduct(title, description, price, thumbnail, code, stock) {
+    this.products.push(title, description, price, thumbnail, code, stock);
+  }
+
+  getProducts() {
+    return this.products;
+  }
+}
+
+const pm = new ProductManager();
+
+pm.addProduct("Producto test 1", "descripcion 1");
+pm.addProduct("Producto test 2", "descripcion 2");
+pm.addProduct("Producto test 3", "descripcion 3");
+
+console.log(pm.getProducts());
+
+//console.log(pm.getProductById(1));
