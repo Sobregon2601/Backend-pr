@@ -102,6 +102,9 @@ class ProductManager {
 
   addProduct(title, description, price, thumbnail, code, stock) {
     this.products.push(title, description, price, thumbnail, code, stock);
+    if (this.products.some((p) => p.code === products.code)) {
+      console.log("el codigo ya existe");
+    }
   }
 
   getProducts() {
@@ -111,9 +114,9 @@ class ProductManager {
 
 const pm = new ProductManager();
 
-pm.addProduct("Producto test 1", "descripcion 1");
-pm.addProduct("Producto test 2", "descripcion 2");
-pm.addProduct("Producto test 3", "descripcion 3");
+pm.addProduct("Producto test 1", "descripcion 1", 11, "asses", 1, 11);
+pm.addProduct("Producto test 2", "descripcion 2", 22, "asses", 2, 22);
+pm.addProduct("Producto test 3", "descripcion 3", 33, "asses", 3, 33);
 
 console.log(pm.getProducts());
 
