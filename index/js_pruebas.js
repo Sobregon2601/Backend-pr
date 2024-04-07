@@ -134,38 +134,39 @@ console.log(pm.getProductById(1));
 */
 
 class ProductManager {
-  static nextId = 1;
   constructor() {
     this.products = [];
-    this.id = ProductManager.nextId++;
+    this.id = ProductManager.generarId();
   }
 
   addProduct(title, description, price, thumbnail, code, stock) {
     this.products.push(title, description, price, thumbnail, code, stock);
   }
 
-  /*  static generarId() {
-    if (!this.nextId) {
-      this.nextId = 1;
+  static generarId() {
+    if (!ProductManager.contador) {
+      ProductManager.contador = 1;
+
+      return ProductManager.contador++;
     }
-    return this.nextId++;
   }
-*/
+
   getProducts() {
     return this.products;
   }
 
-  getProductById(id) {
-    return this.products;
-  }
+  /* getProductById() {
+    return this.id;
+  }*/
 }
 
-const pm = new ProductManager();
-
+const pm = new ProductManager("ProductManager 1");
 pm.addProduct("Producto test 1", "descripcion 1", 11, "assets", 1, 11);
-pm.addProduct("Producto test 2", "descripcion 2", 22, "assets", 2, 22);
-pm.addProduct("Producto test 3", "descripcion 3", 33, "assets", 3, 33);
+
+const pm2 = new ProductManager();
+pm2.addProduct("Producto test 2", "descripcion 2", 22, "assets2", 2, 22);
 
 console.log(pm.getProducts());
+console.log(pm2.getProducts());
 
-console.log(pm.getProductById(1));
+console.log(pm);
