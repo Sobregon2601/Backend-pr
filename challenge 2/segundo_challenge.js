@@ -1,4 +1,7 @@
+import { error } from "console";
 import fs from "fs";
+
+const Almacenamiento = "./productos.txt";
 
 class ProductManager {
   constructor() {
@@ -6,7 +9,7 @@ class ProductManager {
     this.Id = 1;
   }
 
-  addProduct(title, description, price, thumbnail, code, stock) {
+  async addProduct(title, description, price, thumbnail, code, stock) {
     if (!title || !description || !price || !thumbnail || !code || !stock) {
       console.log("Todos los campos son obligatorios");
       return;
@@ -29,10 +32,26 @@ class ProductManager {
 
     this.products.push(product);
     console.log("Producto agregado OK.");
+
+    const data = JSON.stringify(this.products, null, 2);
+
+    try {
+      await fs.promises.writeFile(Almacenamiento, data);
+      console.log("Producto agregado al archivo");
+    } catch (error) {
+      console.error("Error en el guardado", error);
+    }
   }
 
-  getProducts() {
-    console.log(this.products);
+  async getProducts() {
+    try {
+      const data = await fs.promises.readFile(Almacenamiento, "utf-8");
+      //const product = JSON.stringify(data);
+      //product = this.products;
+      return this.products;
+    } catch (error) {
+      console.error("Error de lectura", error);
+    }
   }
 
   getProductByid(id) {
@@ -41,12 +60,24 @@ class ProductManager {
       console.log(`Producto encontrado : ${product.title}`);
       console.log(product);
     } else {
-      console.log("Producto no encontrado");
+      console.log("Producto no guardado");
+    }
+  }
+
+  async sellProductByid(id) {
+    //  const deleteProduct = this.products.filter((product) => product.id === id);
+    const data = JSON.parse(this.products, null, 2);
+    if (data == id) {
+      //await deleteProduct  fs.promises.unlink(Almacenamiento);
+      await fs.promises.unlink(Almacenamiento);
+      console.log("Producto eliminado");
+    } else {
+      console.log("No se encontro el archivo");
     }
   }
 }
 
-pm = new ProductManager();
+const pm = new ProductManager();
 
 pm.getProducts();
 

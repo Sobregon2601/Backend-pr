@@ -44,7 +44,7 @@ class ProductManager {
   }
 }
 
-pm = new ProductManager();
+const pm = new ProductManager();
 
 pm.getProducts();
 

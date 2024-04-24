@@ -174,210 +174,152 @@ console.log(pm);
 ///////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////
-import fs from "fs";
 
-const STORAGE = "./productos.txt";
 
-class ProductManager {
-  constructor() {
-    this.products = [];
-    this.nextId = 1;
-  }
 
-  async addProduct(product) {
-    const isValid =
-      product.title &&
-      product.description &&
-      product.price &&
-      product.thumbnail &&
-      product.code &&
-      product.stock;
-    const isDuplicate = this.products.some((p) => p.code === product.code);
 
-    if (isValid && !isDuplicate) {
-      product.id = this.nextId++;
-      this.products.push(product);
+import fs from 'fs'
 
-      const data = JSON.stringify(this.products, null, 2);
+const DESTINATION_FILE = './first_content.txt'
+const ALTERNATIVE_FILE = './second_content.txt'
+const currentDateTimeIso = new Date().toISOString()
+const currentDateTimeLocale = new Date().toLocaleString()
+ntent = fs.readFileSync(ALTERNATIVE_FILE, { encoding: 'utf-8'})
+console.log(content)
 
-      try {
-        await fs.promises.writeFile(STORAGE, data);
-        console.log("Producto agregado correctamente");
-      } catch (error) {
-        console.error("Los datos no se guardaron", error);
-      }
-    } else {
-      console.log(
-        "Todos los campos son obligatorios o el código de producto ya existe"
-      );
+fs.appendFileSync(DESTINATION_FILE, `${currentDateTimeLocale}\n`)
+const content2 = fs.readFileSync(DESTINATION_FILE, { encoding: 'utf-8'})
+console.log(content2)
+
+// OPCION 2: fs ASINCRONO con callbacks
+// Prueba de escritura y posterior lectura de archivo local
+// Esta es una sintaxis alternativa utilizando callbacks. Recordar EVITAR
+// un anidamiento muy pronunciado de los callbacks, utilizar solo 2 o 3 niveles
+fs.appendFile(DESTINATION_FILE, `${currentDateTimeIso}\n`, (error) => {
+    if (error) {
+        console.log('No se pudo escribir el archivo: ', error.message)
+        return
     }
-  }
+    
+    fs.readFile(DESTINATION_FILE, { encoding: 'utf-8'}, (error, result) => {
+        if (error) {
+            console.log('No se pudo leer el archivo: ', error.message)
+            return
+        }
+        
+        console.log(result)
+    })
+})
 
-  async getProducts() {
+// Para integrar módulos externos a nuestro código, podemos utilizar tanto require como import
+// import es la sintaxis que adpotaremos en el curso
+// const fs = require('fs')
+import fs from 'fs'
+
+const DESTINATION_FILE = './first_content.txt'
+const ALTERNATIVE_FILE = './second_content.txt'
+const currentDateTimeIso = new Date().toISOString()
+const currentDateTimeLocale = new Date().toLocaleString()
+
+
+// OPCION 1: fs SINCRONO
+// Pruebas de escritura y posterior lectura de archivo local
+// Escribimos la fecha y hora actual a archivo, de forma síncrona, y luego lo leemos
+// writeFileSync SOBREESCRIBE, appendFileSync AGREGA al final
+// \n inserta un salto de línea
+fs.writeFileSync(ALTERNATIVE_FILE, `Este es el SEGUNDO ARCHIVO\n${currentDateTimeLocale}\n`)
+const content = fs.readFileSync(ALTERNATIVE_FILE, { encoding: 'utf-8'})
+console.log(content)
+
+fs.appendFileSync(DESTINATION_FILE, `${currentDateTimeLocale}\n`)
+const content2 = fs.readFileSync(DESTINATION_FILE, { encoding: 'utf-8'})
+console.log(content2)
+
+// OPCION 2: fs ASINCRONO con callbacks
+// Prueba de escritura y posterior lectura de archivo local
+// Esta es una sintaxis alternativa utilizando callbacks. Recordar EVITAR
+// un anidamiento muy pronunciado de los callbacks, utilizar solo 2 o 3 niveles
+fs.appendFile(DESTINATION_FILE, `${currentDateTimeIso}\n`, (error) => {
+    if (error) {
+        console.log('No se pudo escribir el archivo: ', error.message)
+        return
+    }
+    
+    fs.readFile(DESTINATION_FILE, { encoding: 'utf-8'}, (error, result) => {
+        if (error) {
+            console.log('No se pudo leer el archivo: ', error.message)
+            return
+        }
+        
+        console.log(result)
+    })
+})
+/*
+**
+ * 1- Leer archivo package.json
+ * 2- Crear un objeto info con keys strContent, objContent y size.
+ *    strContent debe tener el contenido de texto plano recuperado del archivo,
+ *    objContent debe tener el contenido transformado a objeto de JS,
+ *    size debe tener el tamaño en bytes del archivo
+ * 3- Mostrar el objeto info por consola.
+ * 4- Guardar el objeto info en un archivo info.json.
+ * 5- Utilizar fs con promesas, sintaxis async / await y las utilidades JSON.parse() y JSON.stringify().
+ */
+
+// Importamos el módulo filesystem para manejo de archivos
+import fs from 'fs'
+
+
+// Constantes y variables globales
+// Definimos un par de constantes para las ubicaciones de archivos
+const CONFIG_FILE = './package.json'
+const DESTINATION_FILE = './info.json'
+
+
+// Funciones
+// Declaramos una función asíncrona para aprovechar la sintaxis async / await.
+// También podríamos utilizar el await directamente en el nivel principal (top level) del módulo.
+const process = async () => {
     try {
-      const data = await fs.promises.readFile(STORAGE, "utf-8");
-      const products = JSON.parse(data);
-      this.products = products;
-      return this.products;
-    } catch (error) {
-      console.error("Error al leer el archivo:", error);
-      return [];
+        // Esperamos por el resultado en content, ahora utilizamos fs.promises
+        const content = await fs.promises.readFile(CONFIG_FILE, { encoding: 'utf8' })
+        // Volvemos a esperar por el resultado del parseo a JSON, es decir, convertimos
+        // el texto recuperado del archivo en un OBJETO JSON que podemos operar en el código
+        const jsonContent = await JSON.parse(content)
+
+        // Hacemos una tercer espera usando el método stat (estadísticas)
+        // Esto nos devolverá un objeto con info del archivo, por ejemplo su tamaño.
+        const fileInfo = await fs.promises.stat(CONFIG_FILE)
+
+        // Armamos el objeto info solicitado
+        const info = {
+            strContent: content,
+            objContent: jsonContent,
+            size: fileInfo.size // también podría ser directamente content.length
+        }
+
+        // Lo mostramos por consola y luego lo guardamos a disco
+        console.log(info)
+        // JSON.stringify(info, null, 2) permite agregar saltos de línea al escribir el contenido a archivo
+        await fs.promises.writeFile(DESTINATION_FILE, JSON.stringify(info, null, 2))
+    } catch (err) {
+        console.error(err.message)
     }
-  }
-
-  getProductById(id) {
-    const product = this.products.find((p) => p.id === id);
-    if (product) {
-      console.log("Producto encontrado:");
-      console.log(product);
-      return product;
-    } else {
-      throw new Error("Producto no encontrado");
-    }
-  }
-
-  async updateProduct(id, updatedFields) {
-    const productIndex = this.products.findIndex((p) => p.id === id);
-    if (productIndex !== -1) {
-      const updatedProduct = {
-        ...this.products[productIndex],
-        ...updatedFields,
-      };
-      this.products[productIndex] = updatedProduct;
-
-      const data = JSON.stringify(this.products, null, 2);
-
-      try {
-        await fs.promises.writeFile(STORAGE, data);
-        console.log("Producto actualizado correctamente");
-      } catch (error) {
-        console.error("Error al actualizar el producto:", error);
-      }
-    } else {
-      throw new Error("Producto no encontrado");
-    }
-  }
-
-  async deleteProduct(id) {
-    const updatedProducts = this.products.filter(
-      (product) => product.id !== id
-    );
-
-    if (updatedProducts.length < this.products.length) {
-      const updatedData = JSON.stringify(updatedProducts, null, 2);
-
-      try {
-        await fs.promises.writeFile(STORAGE, updatedData);
-        console.log("Producto eliminado correctamente");
-      } catch (error) {
-        console.error("Error al eliminar el producto:", error);
-      }
-    } else {
-      throw new Error("Producto no encontrado");
-    }
-  }
-
-  async deleteFile() {
-    try {
-      await fs.promises.unlink(STORAGE);
-      console.log("Archivo eliminado correctamente");
-    } catch (error) {
-      console.error("Error al eliminar el archivo:", error);
-    }
-  }
 }
 
-async function testAddProducts() {
-  const productManager = new ProductManager();
 
-  await productManager.addProduct({
-    title: "producto prueba 1",
-    description: "Este es un producto prueba",
-    price: 200,
-    thumbnail: "Sin imagen",
-    code: "C001",
-    stock: 25,
-  });
+// Flujo principal, solo se inicia la secuencia llamando a process()
+process()
 
-  await productManager.addProduct({
-    title: "producto prueba 2",
-    description: "Este es un producto prueba",
-    price: 400,
-    thumbnail: "Sin imagen",
-    code: "C002",
-    stock: 55,
-  });
 
-  await productManager.addProduct({
-    title: "producto prueba 3",
-    description: "Este es un producto prueba",
-    price: 300,
-    thumbnail: "Sin imagen",
-    code: "C003",
-    stock: 30,
-  });
-}
 
-async function testGetProducts() {
-  const productManager = new ProductManager();
-  const products = await productManager.getProducts();
-  console.log(products);
-}
-
-async function testGetProductById() {
-  const productManager = new ProductManager();
+async getProducts() {
   try {
-    await productManager.getProducts();
-    await productManager.getProductById(3);
+    const data = await fs.promises.readFile(Almacenamiento, "utf-8");
+    //const product = JSON.parse(data);
+    //this.products = product;
+    return this.products;
   } catch (error) {
-    console.error(error.message);
+    console.error("Error de lectura", error);
   }
 }
-
-async function testUpdateProduct() {
-  const productManager = new ProductManager();
-  try {
-    await productManager.getProducts();
-
-    await productManager.updateProduct(1, {
-      title: "Xiaomi 13 4G",
-      price: 250,
-    });
-    console.log("Producto actualizado correctamente");
-  } catch (error) {
-    console.error("Error al actualizar el producto:", error.message);
-  }
-}
-
-async function testDeleteProduct() {
-  const productManager = new ProductManager();
-  try {
-    await productManager.getProducts();
-    await productManager.deleteProduct(2);
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-
-async function testDeleteFile() {
-  const productManager = new ProductManager();
-  await productManager.deleteFile();
-}
-
-// Ejecutar las pruebas individualmente
-//testAddProducts();
-//testUpdateProduct();
-//testGetProducts();
-//testGetProductById();
-//testDeleteProduct();
-//testDeleteFile();
-
-// Ejecutar todas las pruebas
-/*  async function runTests() {
-    await testAddProducts();
-    await testGetProducts();
-    await testGetProductById();
-    await testUpdateProduct();
-    await testDeleteProduct();
-} 
-runTests();  */
