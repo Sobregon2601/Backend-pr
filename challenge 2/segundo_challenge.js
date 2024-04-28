@@ -46,32 +46,31 @@ class ProductManager {
   async getProducts() {
     try {
       const data = await fs.promises.readFile(Almacenamiento, "utf-8");
-      //const product = JSON.stringify(data);
-      //product = this.products;
-      return this.products;
+      const product = JSON.parse(data, null, 2);
+      return product;
     } catch (error) {
       console.error("Error de lectura", error);
     }
   }
 
-  getProductByid(id) {
-    const product = this.products.find((product) => product.id === id);
+  async getProductByid(id) {
+    const data = await this.getProducts();
+    const product = data.find((product) => product.id === id);
     if (product) {
       console.log(`Producto encontrado : ${product.title}`);
-      console.log(product);
+      return product;
     } else {
       console.log("Producto no guardado");
     }
   }
 
   async sellProductByid(id) {
-    //  const deleteProduct = this.products.filter((product) => product.id === id);
-    const data = JSON.parse(this.products, null, 2);
-    if (data == id) {
-      //await deleteProduct  fs.promises.unlink(Almacenamiento);
+    const data = await this.getProducts();
+    const product = data.find((product) => product.id === id);
+    try {
       await fs.promises.unlink(Almacenamiento);
       console.log("Producto eliminado");
-    } else {
+    } catch (error) {
       console.log("No se encontro el archivo");
     }
   }
@@ -87,3 +86,5 @@ pm.addProduct("Producto3", "descripcion3", 400, "images.jpg", "COO2", 35);
 
 pm.getProductByid(1);
 pm.getProductByid(4);
+
+pm.sellProductByid(1);

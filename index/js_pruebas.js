@@ -323,3 +323,41 @@ async getProducts() {
     console.error("Error de lectura", error);
   }
 }
+
+
+
+
+//Hola Mathias, el archivo se escribe bien, igual recorda que debe ser en formato .json, y en cuanto a los metodos getProducts(), getProductsById() y sellProductById(), se debe hacer en base al archivo y no desde el array de this.products por lo que la lectura y borrado del producto debe suceder en el archivo de los productos.
+
+
+
+Te dejo de ayuda los metodos getProducts() y getProductsById() y resuelvas solo sellProductById()
+
+
+
+async getProducts() {
+    try {
+      const data = await fs.promises.readFile(Almacenamiento, "utf-8");
+      
+      const product = JSON.parse(data, null, 2);
+
+
+      return product
+    } catch (error) {
+      console.error("Error de lectura", error);
+    }
+  }
+
+
+ async getProductByid(id) {
+    const data = await this.getProducts();
+    const product = data.find((product) => product.id === id);
+    if (product) {
+      console.log(`Producto encontrado : ${product.title}`);
+      return product
+    } else {
+      console.log("Producto no guardado");
+    }
+  }
+
+Cualquier duda, avisame.
