@@ -83,6 +83,8 @@ pm.getProducts();
 pm.addProduct("Producto", "descripcion", 200, "images.jpg", "COO1", 25);
 pm.addProduct("Producto2", "descripcion2", 300, "images.jpg", "COO1", 25);
 pm.addProduct("Producto3", "descripcion3", 400, "images.jpg", "COO2", 35);
+pm.addProduct("Producto4", "descripcion3", 400, "images.jpg", "COO3", 35);
+pm.addProduct("Producto5", "descripcion3", 400, "images.jpg", "COO4", 35);
 
 pm.getProductByid(1);
 pm.getProductByid(4);
